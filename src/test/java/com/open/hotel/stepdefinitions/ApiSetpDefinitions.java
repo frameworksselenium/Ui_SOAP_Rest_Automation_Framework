@@ -1,6 +1,7 @@
 package com.open.hotel.stepdefinitions;
 
 import com.open.abddf.context.TestContext;
+import com.open.abddf.services.FlatMapUtil;
 import com.open.abddf.services.RestServices;
 import com.open.abddf.services.ResultsAssertions;
 import com.open.abddf.services.SoapServices;
@@ -12,7 +13,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-
+import java.io.IOException;
 import java.util.HashMap;
 
 public class ApiSetpDefinitions {
@@ -25,7 +26,7 @@ public class ApiSetpDefinitions {
 	RestServices restServices;
 	ResultsAssertions resultsAssertions;
 	Data data;
-
+	FlatMapUtil flatMapUtil;
 
 	public ApiSetpDefinitions(TestContext context){
 		this.context = context;
@@ -35,6 +36,7 @@ public class ApiSetpDefinitions {
 		restServices = new RestServices(context);
 		resultsAssertions = new ResultsAssertions(context);
 		data = new Data(context);
+		flatMapUtil = new FlatMapUtil(context);
 	}
 
 
@@ -55,6 +57,20 @@ public class ApiSetpDefinitions {
 		}
 	}
 
+
+	@When("I submit the JSON {string} request with endpoint {string} for {string} service and save response {string}")
+	public void I_submit_the_JSON_request(String requestType, String endPoint, String customerName, String variableName){
+		this.context.setVar("customerName", customerName);
+		if(requestType.contains("POST")){
+			this.restServices.getResponseFromPostMethod(this.context.getVar("TEMPLATE").toString(), endPoint);
+			this.context.setVar(variableName, this.context.getVar("responseString"));
+		}else if(requestType.contains("GET")){
+			this.restServices.getResponseFromGetMethod(endPoint);
+			this.context.setVar(variableName, this.context.getVar("responseString"));
+		}
+	}
+
+
 	@And("Validating {string} from {string} JSON response")
 	public void Validating_ExpectedValue_from_JSON_response(String expectedVal, String scenario) {
 		this.resultsAssertions.jsonResponseAssertions(expectedVal, scenario);
@@ -63,7 +79,7 @@ public class ApiSetpDefinitions {
 
 	//////////////////////CSV Json////////////////////////////////////////////////////////////
 	@Given("Customer {string} Read data from {string} with testcase ID {string} and Create JSON request using JSON template {string}")
-	public void CSV_Create_JSON_request(String customer, String csvFileName, String template, String testCaseID) {
+	public void CSV_Create_JSON_request(String customer, String csvFileName, String testCaseID, String template) {
 		this.context.setVar("customerName", customer);
 		this.context.setVar("csvFileName", csvFileName);
 		this.csvData.jsonRequestCSV(customer, testCaseID, template);
@@ -87,7 +103,7 @@ public class ApiSetpDefinitions {
 		this.context.setVar("customerName", customerName);
 		this.excelData.xmlRequestExcel(customerName, testCaseID, sheet, template);
 	}
-	@When("^I submit the xml request$")
+	@When("I submit the xml request")
 	public void I_submit_the_xml_request(){
 		this.soapServices.sendSoapRequest();
 	}
@@ -125,5 +141,27 @@ public class ApiSetpDefinitions {
 		this.data.xmlRequest(template);
 	}
 
+
+	////compare 2 json files////////////////////////////////////
+	@Given("compare 2 {string} responses - {string} and {string}")
+	public void compare_2_files(String fileType, String leftFile, String rightFile) throws IOException {
+		this.flatMapUtil.compareFiles(fileType, this.context.getVar("response1").toString(), this.context.getVar("response2").toString());
+	}
+
+	@Given("compare 2 {string} files which stored in disk - file1 {string} and file2 {string}")
+	public void compare_2_json_files_Sample(String fileType, String leftFile, String rightFile) throws IOException {
+		this.flatMapUtil.compareFiles(leftFile, rightFile);
+	}
+
+	@When("I submit the {string} request and save response {string}")
+	public void I_submit_the_xml_request(String formatType, String variableName){
+		this.soapServices.sendSoapRequest();
+		this.context.setVar(variableName, this.context.getVar("responseString"));
+	}
+
+	@Given("compare 2 {string} responses - {string} and {string} using pojo")
+	public void compare_2_Json_Responses_Using_Pojo(String fileType, String leftFile, String rightFile) throws IOException {
+		this.flatMapUtil.pojoComparision(this.context.getVar("response1").toString(), this.context.getVar("response2").toString());
+	}
 
 }

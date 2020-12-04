@@ -20,7 +20,7 @@ import java.util.List;
 				"html:target/cucumberReport",
 				"json:target/cucumberReport/cucumber.json",
 		},
-		tags={"@SOAPApiPostRequestCucumberParameterization"},
+		tags={"@Compare2files4"},
 		features = {"src/test/java/com/open/hotel/features"},
 		glue={"com.open.hotel.hooks", "com.open.hotel.stepdefinitions"},
 		strict = true,
