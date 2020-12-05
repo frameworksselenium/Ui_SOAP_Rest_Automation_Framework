@@ -17,6 +17,7 @@ public class LoginSetpDefinition {
 
 	@Given("Open Browser")
 	public void OpenBrowser() {
+
 		this.context.OpenBrowser();
 	}
 

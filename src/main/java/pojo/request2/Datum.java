@@ -1,5 +1,5 @@
 
-package com.open.abddf.pojo.request2;
+package pojo.request2;
 
 import javax.annotation.Generated;
 import com.google.gson.annotations.SerializedName;

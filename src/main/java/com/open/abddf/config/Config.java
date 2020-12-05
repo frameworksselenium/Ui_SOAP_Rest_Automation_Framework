@@ -23,8 +23,8 @@ public class Config {
             FileInputStream fis = new FileInputStream( configFilePath + "\\Sys.properties");
             properties.load(fis);
             fis.close();
-            properties.setProperty("resultFolder", rootFolderName + "/target/Reports");
-            properties.setProperty("resultFolderName", rootFolderName + "/target/Reports/Execution_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
+            //properties.setProperty("resultFolder", rootFolderName + "/target/Reports");
+            //properties.setProperty("resultFolderName", rootFolderName + "/target/Reports/Execution_" + new SimpleDateFormat("yyyyMMddHHmm").format(new Date()));
         }catch(Exception e){
             throw new RuntimeException(e);
         }

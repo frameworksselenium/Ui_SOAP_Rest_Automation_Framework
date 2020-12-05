@@ -37,8 +37,8 @@ public class TestNGRunner extends AbstractTestNGCucumberTests {
 
 	@BeforeSuite()
 	public void setup(){
-		Config.createFolder(Config.properties.getProperty("resultFolder"));
-		Config.createFolder(Config.properties.getProperty("resultFolderName"));
+		//Config.createFolder(Config.properties.getProperty("resultFolder"));
+		//Config.createFolder(Config.properties.getProperty("resultFolderName"));
 	}
 
 	@AfterSuite()

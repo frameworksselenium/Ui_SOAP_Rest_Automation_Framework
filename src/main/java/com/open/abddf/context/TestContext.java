@@ -41,10 +41,12 @@ public class TestContext {
 	}
 
 	public Object getVar(Object name){
+
 		return vars.get(name);
 	}
 
 	public void setVar(Object name, Object value){
+
 		this.vars.put(name, value);
 	}
 
@@ -59,6 +61,7 @@ public class TestContext {
 	}
 
 	public void removeVar(Object var){
+
 		vars.remove(var);
 	}
 

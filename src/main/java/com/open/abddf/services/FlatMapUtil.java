@@ -7,13 +7,14 @@ import com.google.common.reflect.TypeToken;
 import com.google.gson.Gson;
 import com.open.abddf.context.TestContext;
 import com.open.abddf.logger.LoggerClass;
+import io.cucumber.java.Scenario;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
 import org.json.JSONException;
 import org.json.XML;
 import org.yaml.snakeyaml.Yaml;
-import com.open.abddf.pojo.request1.Response1Pojo;
-import com.open.abddf.pojo.request2.Response2Pojo;
+import pojo.request1.Response1Pojo;
+import pojo.request2.Response2Pojo;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.AbstractMap.SimpleEntry;
@@ -146,7 +147,6 @@ public final class FlatMapUtil {
             throw new RuntimeException("Unsupported types.");
         }
     }
-
 
     public static String convertYamltoJson(String fileName){
         try{
@@ -333,10 +333,15 @@ public final class FlatMapUtil {
     }
 
     public void assertPojoValues(String nodeName, String response1Value, String response2Value){
+        Scenario scenario = (Scenario)this.context.getVar("scenario");
         if(response1Value.equalsIgnoreCase(response2Value)){
-            log.info("PASS:: Response1 Node Name : '" + nodeName + "' and Values :'" + response1Value + "' - Response2 Node Name : '" + nodeName + "' and Values :'" + response2Value + "'");
+            String passString = "PASS:: Response1 Node Name : '" + nodeName + "' and Values :'" + response1Value + "' - Response2 Node Name : '" + nodeName + "' and Values :'" + response2Value + "'";
+            scenario.write("Response : " + passString);
+            log.info(passString);
         }else{
-            log.info("FAIL:: Response1 Node Name : '" + nodeName + "' and Values :'" + response1Value + "' - Response2 Node Name : '" + nodeName + "' and Values :'" + response2Value + "'");
+            String failString = "FAIL:: Response1 Node Name : '" + nodeName + "' and Values :'" + response1Value + "' - Response2 Node Name : '" + nodeName + "' and Values :'" + response2Value + "'";
+            scenario.write("Response : " + failString);
+            log.info(failString);
         }
     }
 }

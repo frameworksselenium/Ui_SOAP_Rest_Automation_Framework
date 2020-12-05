@@ -21,6 +21,7 @@ public class Hooks{
 	public void beforeScenario(Scenario scenario){
 		this.context.setVar("testCaseName", scenario.getName().split(":")[1]);
 		this.context.setVar("testCaseID", scenario.getName().split(":")[0]);
+		this.context.setVar("scenario", scenario);
 
 		org.apache.log4j.Logger log = LoggerClass.getThreadLogger("Thread" + Thread.currentThread().getName(), this.context.getVar("testCaseName").toString());
 		log.info("Thread ID:'" + Thread.currentThread().getId() + "' 'PASS'");

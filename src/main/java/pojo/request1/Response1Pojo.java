@@ -1,5 +1,5 @@
 
-package com.open.abddf.pojo.request2;
+package pojo.request1;
 
 import java.util.List;
 import javax.annotation.Generated;
@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 
 @Generated("net.hexar.json2pojo")
 @SuppressWarnings("unused")
-public class Response2Pojo {
+public class Response1Pojo {
 
     @SerializedName("code")
     private Long mCode;

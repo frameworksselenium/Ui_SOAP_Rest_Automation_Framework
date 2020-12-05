@@ -3,6 +3,7 @@ package com.open.abddf.services;
 import com.open.abddf.config.Config;
 import com.open.abddf.context.TestContext;
 import com.open.abddf.logger.LoggerClass;
+import io.cucumber.java.Scenario;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -242,6 +243,8 @@ public class RestServices {
 			String responseString = EntityUtils.toString(entity1);
 			log.info("Response  - " + responseString);
 			this.context.setVar("responseString", responseString);
+			Scenario scenario = (Scenario)this.context.getVar("scenario");
+			scenario.write("Response : " + responseString);
 			httpClient.close();
 		}catch(Exception var1) {
 			log.info("response failed " + var1 + System.lineSeparator());
