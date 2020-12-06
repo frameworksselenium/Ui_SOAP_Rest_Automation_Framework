@@ -20,7 +20,7 @@ import java.util.List;
 				"html:target/cucumberReport",
 				"json:target/cucumberReport/cucumber.json",
 		},
-		tags={"@Compare2files4"},
+		tags={"@test"},
 		features = {"src/test/java/com/open/hotel/features"},
 		glue={"com.open.hotel.hooks", "com.open.hotel.stepdefinitions"},
 		strict = true,
@@ -37,8 +37,8 @@ public class TestNGRunner extends AbstractTestNGCucumberTests {
 
 	@BeforeSuite()
 	public void setup(){
-		//Config.createFolder(Config.properties.getProperty("resultFolder"));
-		//Config.createFolder(Config.properties.getProperty("resultFolderName"));
+		Config.createFolder(Config.properties.getProperty("resultFolder"));
+		Config.createFolder(Config.properties.getProperty("resultFolderName"));
 	}
 
 	@AfterSuite()

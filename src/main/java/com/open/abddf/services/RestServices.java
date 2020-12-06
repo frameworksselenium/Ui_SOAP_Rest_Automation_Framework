@@ -1,5 +1,10 @@
 package com.open.abddf.services;
 
+import com.jayway.restassured.RestAssured;
+import com.jayway.restassured.response.Response;
+import com.jayway.restassured.specification.RequestSpecification;
+import com.jayway.restassured.builder.RequestSpecBuilder;
+
 import com.open.abddf.config.Config;
 import com.open.abddf.context.TestContext;
 import com.open.abddf.logger.LoggerClass;
@@ -20,6 +25,8 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+
+import static com.jayway.restassured.RestAssured.given;
 
 public class RestServices {
 	
@@ -250,5 +257,109 @@ public class RestServices {
 			log.info("response failed " + var1 + System.lineSeparator());
 		}
 	}
-		
+
+
+
+	public void getResponseFromPostMethodRestAssured(String jsonRequest, String endPoint) {
+		try {
+			String region = Config.properties.getProperty("Region");
+			String url = Config.properties.getProperty("EndPointURL_" + region + "_" + this.context.getVar("customerName"));
+			log.info("end point url - " + url + endPoint);
+			RestAssured.baseURI= url;
+			RequestSpecification specification = RestAssured.given();
+
+			if (url != null){
+				String header = Config.properties.getProperty("Header_" + region + "_" + this.context.getVar("customerName"));
+				String[] headerValues = header.split(";");
+				for(int i = 0; i < headerValues.length; ++i) {
+					String[] values = headerValues[i].split(":");
+					specification.header(values[0],values[1]);
+				}
+			}
+
+			specification.body(jsonRequest.toString());
+			Response response = specification.get(endPoint);
+			int statusCode = response.getStatusCode();
+			if (statusCode != 200) {
+				throw new RuntimeException("Failed : HTTP error code :" +  statusCode);
+			}
+			//String responseString = given().spec(specification).body(jsonRequest).when().post(url).asString();
+			String responseString = response.body().asString();
+
+			log.info("Response  - " + responseString);
+			this.context.setVar("responseString", responseString);
+		}catch(Exception var1) {
+			log.info("response failed " + var1.getMessage() + System.lineSeparator());
+		}
+	}
+
+	public void getResponseFromPostMethodRestAssured1(String jsonRequest, String endPoint) {
+		//https://www.baeldung.com/httpclient-post-http-request
+		//https://www.mkyong.com/java/apache-httpclient-examples/
+		try {
+			String region = Config.properties.getProperty("Region");
+			String url = Config.properties.getProperty("EndPointURL_" + region + "_" + this.context.getVar("customerName"));
+			log.info("end point url - " + url + endPoint);
+			//RestAssured.baseURI= url;
+
+			//Response response = given()
+			//		.contentType("application/json")
+			//		.header("Authorization","Bearer 76033025eaf1e4fc24dd8dde2619ccccba9865e27de9f7617f871faf8ea26118")
+			//		.body(jsonRequest).when().post(endPoint);
+			RequestSpecification specification = new RequestSpecBuilder().setRelaxedHTTPSValidation().build();
+			//specification = specification.contentType(ContentType.JSON);
+
+			if (url != null){
+				String header = Config.properties.getProperty("Header_" + region + "_" + this.context.getVar("customerName"));
+				String[] headerValues = header.split(";");
+				for(int i = 0; i < headerValues.length; ++i) {
+					String[] values = headerValues[i].split(":");
+					specification.header(values[0],values[1]);
+				}
+			}
+
+			int statusCode = given().spec(specification).body(jsonRequest).when().post(url+endPoint).getStatusCode();
+			//int statusCode = response.getStatusCode();
+			if (statusCode != 200) {
+				throw new RuntimeException("Failed : HTTP error code :" +  statusCode);
+			}
+			String responseString = given().spec(specification).body(jsonRequest).when().post(url).asString();
+			//String responseString = response.body().asString();
+
+			log.info("Response  - " + responseString);
+			this.context.setVar("responseString", responseString);
+		}catch(Exception var1) {
+			log.info("response failed " + var1.getMessage() + System.lineSeparator());
+		}
+	}
+
+	public void getResponseFromGetMethodRestAssured(String endPoint) {
+		try {
+			String region = Config.properties.getProperty("Region");
+			String url = Config.properties.getProperty("EndPointURL_" + region + "_" + this.context.getVar("customerName"));
+			log.info("end point url - " + url + endPoint);
+			RestAssured.baseURI= url;
+			RequestSpecification specification = RestAssured.given();
+			if (url != null){
+				String header = Config.properties.getProperty("Header_" + region + "_" + this.context.getVar("customerName"));
+				String[] headerValues = header.split(";");
+				for(int i = 0; i < headerValues.length; ++i) {
+					String[] values = headerValues[i].split(":");
+					specification.header(values[0],values[1]);
+				}
+			}
+			Response response = specification.get(endPoint);
+			int statusCode = response.getStatusCode();
+			if (statusCode != 200) {
+				throw new RuntimeException("Failed : HTTP error code :" +  statusCode);
+			}
+			String responseString = response.body().asString();
+			log.info("Response  - " + responseString);
+			this.context.setVar("responseString", responseString);
+			Scenario scenario = (Scenario)this.context.getVar("scenario");
+			scenario.write("Response : " + responseString);
+		}catch(Exception var1) {
+			log.info("response failed " + var1 + System.lineSeparator());
+		}
+	}
 }

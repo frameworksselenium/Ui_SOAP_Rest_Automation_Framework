@@ -6,6 +6,7 @@ import io.cucumber.java.Scenario;
 import io.cucumber.java.After;
 import io.cucumber.java.Before;
 import org.openqa.selenium.WebDriver;
+import org.testng.asserts.SoftAssert;
 
 import java.text.ParseException;
 
@@ -22,6 +23,8 @@ public class Hooks{
 		this.context.setVar("testCaseName", scenario.getName().split(":")[1]);
 		this.context.setVar("testCaseID", scenario.getName().split(":")[0]);
 		this.context.setVar("scenario", scenario);
+		SoftAssert softAssert = new SoftAssert();
+		this.context.setVar("softAssert", softAssert);
 
 		org.apache.log4j.Logger log = LoggerClass.getThreadLogger("Thread" + Thread.currentThread().getName(), this.context.getVar("testCaseName").toString());
 		log.info("Thread ID:'" + Thread.currentThread().getId() + "' 'PASS'");
@@ -34,6 +37,8 @@ public class Hooks{
 			driver.close();
 			driver.quit();
 		}
+		SoftAssert softAssert = (SoftAssert)this.context.getVar("softAssert");
+		softAssert.assertAll();
 	}
 
 }

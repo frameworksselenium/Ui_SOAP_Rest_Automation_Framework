@@ -2,7 +2,7 @@ package com.open.hotel.pages;
 
 import com.open.abddf.context.TestContext;
 import com.open.abddf.security.Security;
-import com.open.abddf.uiUtils.UIUtils;
+import com.open.abddf.ui.UIUtils;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.FindBy;

@@ -1,18 +1,23 @@
 package com.open.hotel.stepdefinitions;
 
+import com.open.abddf.assertions.Assertions;
 import com.open.abddf.context.TestContext;
-import com.open.abddf.services.FlatMapUtil;
+import com.open.abddf.flatMap.FlatMapUtil;
+import com.open.abddf.services.ConvertToPojo;
 import com.open.abddf.services.RestServices;
-import com.open.abddf.services.ResultsAssertions;
 import com.open.abddf.services.SoapServices;
-import com.open.abddf.utilities.CSVData;
-import com.open.abddf.utilities.Data;
-import com.open.abddf.utilities.ExcelData;
+import com.open.abddf.dataParsers.CSVData;
+import com.open.abddf.dataParsers.Data;
+import com.open.abddf.dataParsers.ExcelData;
+import com.open.hotel.api.GoRestPojoValidation;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.testng.Assert;
+import org.testng.asserts.SoftAssert;
+
 import java.io.IOException;
 import java.util.HashMap;
 
@@ -24,18 +29,21 @@ public class ApiSetpDefinitions {
 	CSVData csvData;
 	SoapServices soapServices;
 	RestServices restServices;
-	ResultsAssertions resultsAssertions;
+	Assertions resultsAssertions;
 	Data data;
+	ConvertToPojo convertToPojo;
+	GoRestPojoValidation goRestPojoValidation;
 	FlatMapUtil flatMapUtil;
-
 	public ApiSetpDefinitions(TestContext context){
 		this.context = context;
 		excelData = new ExcelData(context);
 		csvData = new CSVData(context);
 		soapServices = new SoapServices(context);
 		restServices = new RestServices(context);
-		resultsAssertions = new ResultsAssertions(context);
+		resultsAssertions = new Assertions(context);
 		data = new Data(context);
+		convertToPojo = new ConvertToPojo(context);
+		goRestPojoValidation = new GoRestPojoValidation(context);
 		flatMapUtil = new FlatMapUtil(context);
 	}
 
@@ -161,7 +169,29 @@ public class ApiSetpDefinitions {
 
 	@Given("compare 2 {string} responses - {string} and {string} using pojo")
 	public void compare_2_Json_Responses_Using_Pojo(String fileType, String leftFile, String rightFile) throws IOException {
-		this.flatMapUtil.pojoComparision(this.context.getVar("response1").toString(), this.context.getVar("response2").toString());
+		this.goRestPojoValidation.pojoComparision(this.context.getVar("response1").toString(), this.context.getVar("response2").toString());
 	}
 
+	@Given("softassert test {string} and {string}")
+	public void test(String value1, String value2) {
+		SoftAssert softAssert = (SoftAssert)this.context.getVar("softAssert");
+		softAssert.assertTrue(value1.equals(value2), "Value1 :'" + value1 + "' not matching with Value2 :'" +  value2 + "'");
+	}
+
+	@Given("hardassert test {string} and {string}")
+	public void hardasserttest(String value1, String value2) {
+		Assert.assertTrue(value1.equals(value2), "Value1 :'" + value1 + "' not matching with Value2 :'" +  value2 + "'");
+	}
+
+
+	/////RestAssured
+	@When("I submit the JSON {string} request with endpoint {string} for {string} service with RestAssured")
+	public void I_submit_the_JSON_request_with_RestAssured(String requestType, String endPoint, String customerName){
+		this.context.setVar("customerName", customerName);
+		if(requestType.contains("POST")){
+			this.restServices.getResponseFromPostMethodRestAssured(this.context.getVar("TEMPLATE").toString(), endPoint);
+		}else if(requestType.contains("GET")){
+			this.restServices.getResponseFromGetMethodRestAssured(endPoint);
+		}
+	}
 }

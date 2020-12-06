@@ -1,4 +1,4 @@
-package com.open.abddf.uiUtils;
+package com.open.abddf.ui;
 
 import com.open.abddf.context.TestContext;
 import com.open.abddf.logger.LoggerClass;

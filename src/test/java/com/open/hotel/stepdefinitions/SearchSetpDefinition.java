@@ -1,7 +1,7 @@
 package com.open.hotel.stepdefinitions;
 
 import com.open.abddf.context.TestContext;
-import com.open.abddf.utilities.Data;
+import com.open.abddf.dataParsers.Data;
 import com.open.hotel.pages.Search;
 import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;

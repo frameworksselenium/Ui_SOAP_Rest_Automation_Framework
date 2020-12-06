@@ -1,16 +1,19 @@
-package com.open.abddf.services;
+package com.open.abddf.assertions;
 
 import com.jayway.jsonpath.JsonPath;
 import com.open.abddf.context.TestContext;
 import com.open.abddf.logger.LoggerClass;
-import com.open.abddf.utilities.CSVData;
-import com.open.abddf.utilities.ExcelData;
+import com.open.abddf.services.RestServices;
+import com.open.abddf.services.XMLUtilitySupport;
+import com.open.abddf.dataParsers.CSVData;
+import com.open.abddf.dataParsers.ExcelData;
 import org.apache.log4j.Logger;
 import org.json.simple.parser.JSONParser;
+import org.testng.Assert;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
-public class ResultsAssertions {
+public class Assertions {
 
 	public int responseStatus;
 	public String responseString;
@@ -18,10 +21,11 @@ public class ResultsAssertions {
 	CSVData csvData;
 	public RestServices restServices;
 	XMLUtilitySupport xmlUtilitySupport;
-	org.apache.log4j.Logger log;
+	Logger log;
 	public TestContext context;
 
-	public ResultsAssertions(TestContext context) {
+	public Assertions(TestContext context) {
+
 		this.context = context;
 		xmlUtilitySupport = new XMLUtilitySupport(context);
 		csvData = new CSVData(context);
@@ -50,7 +54,6 @@ public class ResultsAssertions {
 
 	public void jsonResponseAssertionsCSV(String expectedVal, String nodeName, String jsonPath) {
 
-		//String jsonPath = this.csvData.readDataForJsonPathFromCSV(scenario, expectedVal);
 		String jsonFile = this.context.getVar("responseString").toString();
 		String result = this.getValueFromJsonFile(jsonFile, jsonPath).trim();
 		if (result != null) {
@@ -69,7 +72,7 @@ public class ResultsAssertions {
 			JSONParser parser = new JSONParser();
 			Object jsonObject = parser.parse(jsonFile);
 			String result = JsonPath.read(jsonObject, jsonPath).toString();
-			return result;//.substring(result.indexOf("[") + 1, result.indexOf("]"));
+			return result;
 		} catch (Exception var5) {
 			log.info("Exception - " + var5);
 			return null;
@@ -77,8 +80,6 @@ public class ResultsAssertions {
 	}
 	
 	public void xmlResponseAssertions(String reportName, String childName, String expectedVal) {
-		//String jsonPath = this.data.readDataForJsonValidations(scenario, expectedVal);
-		//String jsonFile = this.context.testData.get("serviceResponse");
 		boolean isMatch = false;
 		String nodeText = null;
 		NodeList result =(NodeList) xmlUtilitySupport.getValueFromResponse(this.context.getVar("responseString").toString(), "//" + reportName +  "//" + childName);
@@ -96,4 +97,26 @@ public class ResultsAssertions {
 			log.info("FAIL::: Tag of " + reportName + " in " + childName + " not matched with value as '" + expectedVal + "'");
 		}
 	}
+
+	public void assertEquals(String expected, String Actual){
+		if(expected.trim().equalsIgnoreCase(Actual.trim())){
+		}
+		log.info("Exected:-" + expected + ", Actual:-" + Actual);
+		Assert.assertEquals(expected, Actual);
+	}
+
+	public void assertEquals(boolean expected, boolean Actual){
+		if(expected == Actual){
+		}
+		log.info("Exected:-" + expected + ", Actual:-" + Actual);
+		Assert.assertEquals(expected, Actual);
+	}
+
+	public void assertEquals(int expected, int Actual){
+		if(expected == Actual){
+		}
+		log.info( "Exected:-" + expected + ", Actual:-" + Actual);
+		Assert.assertEquals(expected, Actual);
+	}
+
 }

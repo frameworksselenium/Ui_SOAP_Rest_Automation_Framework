@@ -1,4 +1,4 @@
-package com.open.abddf.utilities;
+package com.open.abddf.dataParsers;
 
 import com.open.abddf.context.TestContext;
 import com.open.abddf.logger.LoggerClass;
